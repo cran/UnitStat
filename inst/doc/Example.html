@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Ankita Sharma" />
+
+
+<title>Demystifying UnitStat</title>
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Demystifying UnitStat</h1>
+<h4 class="author">Ankita Sharma</h4>
+<h4 class="date">23-02-2021</h4>
+
+
+
+<p><strong>What does Unit Stat do?</strong></p>
+<p>UnitStat helps the user’s understand whether the random variable under consideration is Stationary or Non-stationary using the Unit Root statistics (like ADF,PP, KPSS,ADF-GLS &amp; NGP etc.) The function ensures to check all the pre-requisite and assumptions which are underlying the unit root test statistics (since the statistical software used by practitioners do not honour these assumptions) and return’s with a statement concluding whether the time series under consideration is stationary with “drift”, “drift &amp; trend”, “trend”, “no drifts- no trend” or non-stationary. If the time series under consideration is observed to be non-stationary with a “drift” or “trend” or “both” component present, the function de-drifts and de-trends the series and performs the test again to produce the final output [see example’s below for detailed interpretation of the outputs].The function thus parses through all the output of all the 4 lags and produces an optimised interpretation of the results. Thus avoiding human error’s/misinterpretation of the results at the same time releasing the user from worrying about interpretation of the results. The function also plot’s the original as well as transformed input data for data visualization purposes.</p>
+<p><strong>How is UnitStat different from other test?</strong></p>
+<p>The interpretation of the stationary results are based on the 95% critical values only which are taken from Dicky and Fuller(1981). The function uses the original Dicky-Fuller test statistics as it was observed from Independent research that Unit roots are highly susceptible to produce incorrect results and are highly unstable at borderline. Along with Borderline instability, researchers have also pointed out the instability of these tests. Researchers have also pointed that, PP test performs worse than ADF in finite sample scenarios whereas KPSS is criticised for high Type I errors. Additionally, ADF-GLS and NGP have not been used since banks generally have a finite sample size ranging from 4 to 40 quarters and using GLS over this sample size would not result in meaningful results Since all the tests have some or the other shortcomings one needs to make a selection of less bad amongst the worst. Based on the independent research and simulations conducted it was observed that ADF test performs better over the rest of the tests. Further, the choice of ADF also comes from the fact that all the other tests have several underlying assumptions which sometimes becomes irrational with finite sample sizes. Assumptions underlying ADF test turns out to be simpler in terms of application. Since the statistical software used by practitioners does not honour these assumptions, this function makes an attempt and produces results accordingly.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(UnitStat)</a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="co"># Example 1 : A simple demostration on uniformly distributed data</span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="co"># y = runif(50,1,49)</span></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="co"># UnitStat(y)</span></a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="co"># UnitStat(y,View_results = &quot;T&quot;) #To view results at all lags</span></a>
+<a class="sourceLine" id="cb1-6" title="6"></a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="co">#Example 2: How the code handles non-stationarity problem</span></a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb1-9" title="9">a =<span class="st"> </span><span class="fl">0.5</span></a>
+<a class="sourceLine" id="cb1-10" title="10">mu=<span class="st"> </span><span class="dv">40</span></a>
+<a class="sourceLine" id="cb1-11" title="11">d =<span class="st"> </span><span class="fl">0.5</span></a>
+<a class="sourceLine" id="cb1-12" title="12">n =<span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb1-13" title="13">dt =<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb1-14" title="14">s =<span class="st"> </span><span class="kw">matrix</span>(<span class="dt">ncol =</span> <span class="dv">1</span>, <span class="dt">nrow =</span> n)</a>
+<a class="sourceLine" id="cb1-15" title="15">s[<span class="dv">1</span>] =<span class="st"> </span><span class="dv">40</span></a>
+<a class="sourceLine" id="cb1-16" title="16">ep =<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb1-17" title="17">pr =<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb1-18" title="18"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n){</a>
+<a class="sourceLine" id="cb1-19" title="19">  pr[i] =<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>,<span class="fl">0.001</span>,<span class="fl">0.999</span>)</a>
+<a class="sourceLine" id="cb1-20" title="20">  ep[i] =<span class="st"> </span><span class="kw">qnorm</span>(pr[i],<span class="dv">0</span>,<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb1-21" title="21">  s[i<span class="op">+</span><span class="dv">1</span>] =<span class="st"> </span>(s[i]<span class="op">+</span><span class="st"> </span>(a<span class="op">*</span>(mu<span class="op">-</span>s[i])<span class="op">*</span>dt)<span class="op">+</span>(d<span class="op">*</span><span class="kw">sqrt</span>(dt)<span class="op">*</span>ep[i]))</a>
+<a class="sourceLine" id="cb1-22" title="22">}</a>
+<a class="sourceLine" id="cb1-23" title="23"></a>
+<a class="sourceLine" id="cb1-24" title="24">t =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">99</span></a>
+<a class="sourceLine" id="cb1-25" title="25">s1 =<span class="st"> </span>s[<span class="dv">1</span><span class="op">:</span><span class="dv">99</span>]</a>
+<a class="sourceLine" id="cb1-26" title="26">s2 =<span class="st"> </span>s1<span class="op">+</span>t</a>
+<a class="sourceLine" id="cb1-27" title="27"></a>
+<a class="sourceLine" id="cb1-28" title="28"><span class="kw">UnitStat</span>(s2, <span class="dt">View_results =</span> <span class="st">&quot;T&quot;</span>)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<pre><code>## [1] &quot;The input Time-series is non-stationary with drift present at Lag 1 however, after taking the First Difference&quot;
+## [1] &quot;Time-series is non-stationary with drift present at Lag 1&quot;</code></pre>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

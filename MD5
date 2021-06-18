@@ -1,0 +1,10 @@
+25367f4200e90a0622c29655984ea929 *DESCRIPTION
+6c0ff793b576c0ccb01fe0b447fefc5a *NAMESPACE
+4918b1f33b6888a03595a3d811d32bfa *NEWS.md
+2b20825a7397c7204c38c3d578e2fd10 *R/UnitStat.R
+db59dc3c85611a59762aa98f0a1e35a2 *build/vignette.rds
+fb735e86405343fb3a16135797c7bb40 *inst/doc/Example.R
+5807c9b654b6b5340bdab24ad500791a *inst/doc/Example.Rmd
+18fcf9abb0e41fda7793c9878ed0f536 *inst/doc/Example.html
+fda8afbf2a92702659e88d506c138f0d *man/UnitStat.Rd
+5807c9b654b6b5340bdab24ad500791a *vignettes/Example.Rmd
